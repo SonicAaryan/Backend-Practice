@@ -1,7 +1,8 @@
 const express = require('express');
-const {connectDB} = require('./config/db')
+const { connectDB } = require('./config/db')
 require('dotenv').config();
 const userRoutes = require('./routes/user.routes')
+const authRoutes = require('./routes/auth.routes')
 
 const app = express(); // now we can use it to define APIs (app.get, app.post, etc.)
 const PORT = process.env.PORT
@@ -9,7 +10,6 @@ const PORT = process.env.PORT
 connectDB()
 
 // middlewares
-// app.use(cors({ origin: true, credentials: true }));
 app.use(express.json()); // This middleware allows your server to understand JSON in requests.
 
 // routes
@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', userRoutes)
+app.use('/auth', authRoutes)
 
 const HOST = process.env.HOST;
 const os = require('os');
