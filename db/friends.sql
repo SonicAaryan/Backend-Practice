@@ -1,0 +1,15 @@
+-- Create friend_requests table
+CREATE TABLE IF NOT EXISTS friend_requests (
+  id SERIAL PRIMARY KEY,
+  from_user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  to_user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  status VARCHAR(20) DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS friends (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  friend_id INT REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
