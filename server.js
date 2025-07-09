@@ -4,6 +4,7 @@ require('dotenv').config();
 const userRoutes = require('./routes/user.routes')
 const authRoutes = require('./routes/auth.routes')
 const friendRoutes = require('./routes/friend.routes')
+const upload = require('./routes/upload.routes')
 
 const app = express(); // now we can use it to define APIs (app.get, app.post, etc.)
 const PORT = process.env.PORT
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.use('/users', userRoutes)
 app.use('/auth', authRoutes)
 app.use('/friends', friendRoutes)
+app.use('/uploads', upload)
 
 const HOST = process.env.HOST;
 const os = require('os');

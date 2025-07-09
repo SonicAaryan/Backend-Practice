@@ -1,5 +1,5 @@
 // Create User
-const {pool} = require('../config/db')
+const { pool } = require('../config/db')
 
 exports.createUser = async (req, res) => {
     const { name, email } = req.body;
@@ -54,7 +54,7 @@ exports.updateUser = async (req, res) => {
 
         if (result.rows.length == 0) return res.status(404).json({ message: 'User not found' })
         res.json(result.rows[0]);
-     } catch (error) {
+    } catch (error) {
         res.status(500).json({ message: 'Error updating user' });
     }
 };
@@ -69,6 +69,6 @@ exports.deleteUser = async (req, res) => {
 
         res.json({ message: 'User deleted' });
     } catch (error) {
-        res.status(500).json({message:'Error deleting user'})
+        res.status(500).json({ message: 'Error deleting user' })
     }
 };

@@ -1,4 +1,5 @@
 const pool = require('../config/db').pool;
+const redis = require('../config/redis');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -40,12 +41,12 @@ exports.login = async (req, res) => {
     try {
         const result = await pool.query('select * from users where email = $1', [email]);
         const user = result.rows[0];
-        if (!user) return res.json(401).json({ message: 'Invalid credentials' });
+        if (!user) return res.json(401).json({ message: 'Invalid User' });
 
         const match = await bcrypt.compare(password, user.password);
-        if (!match) return res.status(401).json({ message: 'Invalid credentials' });
+        if (!match) return res.status(401).json({ message: 'Invalid Password' });
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '3d' });
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
 
         res.json({ message: 'Login successful', token });
     } catch (error) {
@@ -68,5 +69,25 @@ exports.getProfile = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: 'Error Fetching Profile!' });
+    }
+};
+
+exports.getUserProfile = async (req, res) => {
+    const userId = req.userId
+    const cachekey = `user:${userId}`;
+    try {
+        // 1 Try Redis First
+        const cached = await redis.get(cachekey);
+        if (cached) return res.json(JSON.parse(cached));
+
+        // 2 Fallback to DB
+        const result = await pool.query(`select id,name,email from users where id = $1`, [userId]);
+        const user = result.rows[0];
+
+        // 3 Save to cache
+        await redis.set(cachekey, JSON.stringify(user), { EX: 3600 })
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching profile!' });
     }
 };
