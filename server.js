@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.routes')
 const friendRoutes = require('./routes/friend.routes')
 const upload = require('./routes/upload.routes')
 const s3Upload = require('./routes/s3.upload.routes')
+const presignedImgUpload = require('./routes/presigned.img.upload.routes')
 
 const app = express(); // now we can use it to define APIs (app.get, app.post, etc.)
 const PORT = process.env.PORT
@@ -17,8 +18,6 @@ app.use(express.json()); // This middleware allows your server to understand JSO
 
 // routes
 app.get('/', (req, res) => {
-    // req → Incoming request
-    // res → What we send back(response)
     res.send('Hello,Backend Kid! 🚀');
 })
 
@@ -27,6 +26,7 @@ app.use('/auth', authRoutes)
 app.use('/friends', friendRoutes)
 app.use('/uploads', upload)
 app.use('/s3uploadimage', s3Upload)
+app.use('/presignedimg',presignedImgUpload)
 
 const HOST = process.env.HOST;
 const os = require('os');
